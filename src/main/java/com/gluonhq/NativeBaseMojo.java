@@ -178,7 +178,7 @@ public abstract class NativeBaseMojo extends AbstractMojo {
                 targetTriplet = new Triplet(Constants.Profile.ANDROID);
                 break;
             default:
-                throw new RuntimeException("No valid target found for " + target);
+                throw new RuntimeException("NO valid target found for " + target);
         }
         clientConfig.setTarget(targetTriplet);
 
