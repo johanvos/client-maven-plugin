@@ -61,7 +61,7 @@ public class NativeCompileMojo extends NativeBaseMojo {
         String name = project.getName();
         getLog().debug("mcn = "+mainClassName+" and name = "+name);
 
-        List<File> classPath = getCompileClasspathElements(project);
+        List<File> classPath = getClasspathElements(project);
         getLog().debug("classPath = " + classPath);
 
         String cp0 = classPath.stream()
@@ -75,7 +75,8 @@ public class NativeCompileMojo extends NativeBaseMojo {
         getLog().debug("cp = " + cp);
 
         try {
-            SubstrateDispatcher.nativeCompile(Paths.get(buildRoot), clientConfig, cp);
+            SubstrateDispatcher dispatcher = new SubstrateDispatcher(Paths.get(buildRoot), clientConfig);
+            dispatcher.nativeCompile(cp);
         } catch (Exception e) {
             e.printStackTrace();
             throw new MojoExecutionException("Error", e);
