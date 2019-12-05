@@ -32,7 +32,7 @@ package com.gluonhq;
 
 import com.gluonhq.attach.AttachArtifactResolver;
 import com.gluonhq.substrate.Constants;
-import com.gluonhq.substrate.model.ProjectConfiguration;
+import com.gluonhq.substrate.ProjectConfiguration;
 import com.gluonhq.substrate.model.Triplet;
 import com.gluonhq.utils.MavenArtifactResolver;
 import org.apache.commons.exec.ProcessDestroyer;
@@ -150,8 +150,7 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     }
 
     private void configSubstrate() {
-        clientConfig = new ProjectConfiguration();
-        clientConfig.setGraalPath(getGraalvmHome().get());
+        clientConfig = new ProjectConfiguration(mainClass);
         if (javaStaticSdkVersion != null) {
             clientConfig.setJavaStaticSdkVersion(javaStaticSdkVersion);
         }
@@ -186,26 +185,15 @@ public abstract class NativeBaseMojo extends AbstractMojo {
         }
         clientConfig.setTarget(targetTriplet);
 
-        if (backend != null && ! backend.isEmpty()) {
-            clientConfig.setBackend(backend.toLowerCase(Locale.ROOT));
-        }
         clientConfig.setBundlesList(bundlesList);
         clientConfig.setResourcesList(resourcesList);
-        clientConfig.setDelayInitList(delayInitList);
         clientConfig.setJniList(jniList);
         clientConfig.setReflectionList(reflectionList);
-        clientConfig.setRuntimeArgsList(runtimeArgsList);
-        clientConfig.setReleaseSymbolsList(releaseSymbolsList);
 
-        clientConfig.setMainClassName(mainClass);
         clientConfig.setAppName(project.getName());
 
         List<File> classPath = getClasspathElements(project);
-        clientConfig.setUseJavaFX(classPath.stream().anyMatch(f -> f.getName().contains("javafx")));
 
-        clientConfig.setLlcPath(llcPath);
-        clientConfig.setEnableCheckHash("true".equals(enableCheckHash));
-        clientConfig.setUseJNI("true".equals(useJNI));
         clientConfig.setVerbose("true".equals(verbose));
     }
 
