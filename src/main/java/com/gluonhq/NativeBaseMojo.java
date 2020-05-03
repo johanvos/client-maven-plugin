@@ -116,6 +116,9 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     @Parameter(property = "client.verbose", defaultValue = "false")
     String verbose;
 
+    @Parameter(property = "client.farm", defaultValue = "false")
+    String farm;
+    
     @Parameter(property = "client.attachList")
     List<String> attachList;
 
@@ -132,9 +135,13 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     String IOSSkipSigning;
 
     private ProcessDestroyer processDestroyer;
+    
+    private boolean isFarm() {
+        return "true".equals(farm);
+    }
 
     public SubstrateDispatcher createSubstrateDispatcher() throws IOException, MojoExecutionException {
-        if (!getGraalvmHome().isPresent()) {
+        if (!isFarm() && !getGraalvmHome().isPresent()) {
             throw new MojoExecutionException("GraalVM installation directory not found." +
                     " Either set GRAALVM_HOME as an environment variable or" +
                     " set graalvmHome in client-plugin configuration");
@@ -185,6 +192,7 @@ public abstract class NativeBaseMojo extends AbstractMojo {
         clientConfig.setAppId(project.getGroupId() + "." + project.getArtifactId());
         clientConfig.setAppName(project.getName());
         clientConfig.setVerbose("true".equals(verbose));
+        clientConfig.setFarm("true".equals(farm));
         clientConfig.setUsePrismSW("true".equals(enableSWRendering));
 
         return clientConfig;
